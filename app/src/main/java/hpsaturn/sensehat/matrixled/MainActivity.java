@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
 
     private Runnable mRandomColorRunnable = new Runnable() {
 
-        private static final long DELAY_MS = 200L;
+        private static final long DELAY_MS = 100L;
 
         @Override
         public void run() {
@@ -48,12 +48,12 @@ public class MainActivity extends Activity {
             try {
                 Random rnd = new Random();
                 int color = Color.argb(
-                        rnd.nextInt(256), // alpha
+                        rnd.nextInt(128), // alpha
                         rnd.nextInt(256), // R
                         rnd.nextInt(256), // G
                         rnd.nextInt(256)  // B
                 );
-                Log.d(TAG,"setting color to "+ Integer.toString(color, 8));
+                Log.d(TAG,"setting color "+ String.format("#%08X", color));
                 display.draw(color);
                 mHandler.postDelayed(this, DELAY_MS);
 
