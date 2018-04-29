@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
 
     private Runnable mRandomColorRunnable = new Runnable() {
 
-        private static final long DELAY_MS = 100L;
+        private static final long DELAY_MS = 1000L;
 
         @Override
         public void run() {
