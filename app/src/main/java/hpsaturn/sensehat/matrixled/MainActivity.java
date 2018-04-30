@@ -1,7 +1,10 @@
 package hpsaturn.sensehat.matrixled;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,6 +14,8 @@ import com.google.android.things.contrib.driver.sensehat.SenseHat;
 
 import java.io.IOException;
 import java.util.Random;
+
+import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 
 public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -27,18 +32,38 @@ public class MainActivity extends Activity {
             Log.d(TAG, "start display..");
             display = SenseHat.openDisplay();
             display.draw(Color.TRANSPARENT);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         mHandler = new Handler();
-        mHandler.post(mRandomColorRunnable);
+        mHandler.post(mRandomCharacter);
 
     }
 
+    private Runnable mRandomCharacter = new Runnable() {
+
+        private static final long DELAY_MS = 100L;
+
+        @Override
+        public void run() {
+            if(display==null)return;
+            try {
+                Random r = new Random();
+                char c = (char)(r.nextInt(26) + 'a');
+                display.draw(textAsBitmap(String.valueOf(c),11,Color.BLUE));
+                mHandler.postDelayed(this, DELAY_MS);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
     private Runnable mRandomColorRunnable = new Runnable() {
 
-        private static final long DELAY_MS = 1000L;
+        private static final long DELAY_MS = 1500L;
 
         @Override
         public void run() {
@@ -48,7 +73,7 @@ public class MainActivity extends Activity {
             try {
                 Random rnd = new Random();
                 int color = Color.argb(
-                        rnd.nextInt(128), // alpha
+                        20, // alpha
                         rnd.nextInt(256), // R
                         rnd.nextInt(256), // G
                         rnd.nextInt(256)  // B
@@ -63,6 +88,23 @@ public class MainActivity extends Activity {
             }
         }
     };
+
+    public Bitmap textAsBitmap(String text, float textSize, int textColor) {
+
+        Paint paint = new Paint();
+        paint.setTextSize(textSize);
+        paint.setTextScaleX(0.9f);
+        paint.setColor(textColor);
+        paint.setTextAlign(Paint.Align.LEFT);
+        float baseline = -paint.ascent(); // ascent() is negative
+        int width = (int) (paint.measureText(text) + 0.5f); // round
+        int height = (int) (baseline + paint.descent() + 0.5f);
+        Bitmap image = Bitmap.createBitmap(8, 8, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(image);
+        Log.d(TAG,"bitmap=>text:"+text+" baseline:"+baseline+" "+width+"x"+height);
+        canvas.drawText(text, 0, baseline-2.0f, paint);
+        return image;
+    }
 
 
     private void clearDisplay() {
