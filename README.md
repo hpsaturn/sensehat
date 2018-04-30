@@ -13,7 +13,7 @@ SenseHat MatrixLED tests
 
 ## Start Activity
 ```javascript
-adb shell am start hpsaturn.sensehat.matrixled/.mainactivity
+adb shell am start hpsaturn.sensehat.matrixled/.MainActivity
 ```
 
 ### Troubleshooting
@@ -23,7 +23,7 @@ if you get IO permission error, please install with grant permission option and 
 ```javascript
 adb install -g -r app/build/outputs/apk/debug/app-debug.apk
 adb reboot
-adb install -g -r app/build/outputs/apk/debug/app-debug.apk
+adb shell am start hpsaturn.sensehat.matrixled/.MainActivity
 ```
 
 
